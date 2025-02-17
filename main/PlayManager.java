@@ -74,7 +74,6 @@ public class PlayManager {
             case 5 -> mino = new T();
             case 6 -> mino = new Z(); 
         }
-        mino = new Square();
         return mino;
     }
     public void update(){
