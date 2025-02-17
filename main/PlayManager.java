@@ -74,6 +74,7 @@ public class PlayManager {
             case 5 -> mino = new T();
             case 6 -> mino = new Z(); 
         }
+        mino = new Square();
         return mino;
     }
     public void update(){
@@ -167,178 +168,235 @@ public class PlayManager {
         }
     }
     public void draw(Graphics2D g2){
-        // draw play area
-        g2.setColor(Color.white);
-        g2.setStroke(new BasicStroke(4F));// set how thick the lines will be, this is 4 pixels
-        g2.drawRect(left_x-4, top_y-4, WIDTH+8, HEIGHT+8);
-
-        // draw next frame
-        int x = right_x + 100;
-        int y = bottom_y -200;
-        g2.drawRect(x, y, 200, 200);
-        g2.setFont(new Font("Arial", Font.PLAIN, 30));
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2.drawString("NEXT", x+60, y+50);
-        
-        // score frame
-        g2.drawRect(x, top_y, 250, 300);
-        x+=40;
-        y = top_y + 90;
-        g2.drawString("LEVEL: " + level, x, y); y += 70;
-        g2.drawString("SCORE: " + score, x, y); y += 70;
-        g2.drawString("LINES: " + lines, x, y); 
-
-        // draw hold frame
-      /*  x = left_x - 250;
-        y = top_y + 50;
-        g2.drawRect(x, y, 200, 200);
-        g2.drawString("HOLD", x+60, y+50); */
-
-        // draw current tetronimo
-        if(currentMino != null){
-            currentMino.draw(g2);
-        }
-
-        nextMino.draw(g2);
-        //holdMino.draw(g2);
-
-        // draw static blocks
-        for(int i = 0; i < staticBlocks.size(); i++){
-            staticBlocks.get(i).draw(g2);
-        }
-
-        // draw clear effect
-        if(effectCounterOn){
-            effectCounter ++;
+        if(!KeyHandler.start){
+            g2.setColor(Color.yellow);
+            
+            g2.setStroke(new BasicStroke(4F));// set how thick the lines will be, this is 4 pixels
+            int x = left_x;
+            int y = top_y + 200;
+            g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.drawString("PRESS ENTER TO START", x, y);
 
             g2.setColor(Color.white);
-            for(int i = 0; i < effectY.size(); i++){
-                g2.fillRect(left_x, effectY.get(i), WIDTH, Block.SIZE);
+            x = left_x - 350;
+            y = bottom_y - 500;
+            g2.drawRect(x, y, 325, 400);
+            g2.drawString("CONTROLS", x + 75, y + 50); y+= 100;
+            x+=10;
+            g2.drawString("UP: ROTATE PIECE", x, y); y+= 50;
+            g2.drawString("RIGHT: MOVE RIGHT", x, y); y+= 50;
+            g2.drawString("LEFT: MOVE LEFT", x, y); y+= 50;
+            g2.drawString("DOWN: SOFT DROP", x, y); y+= 50;
+            g2.drawString("SPACE: HARD DROP", x, y); y+= 50;
+            g2.drawString("ESCAPE: PAUSE", x, y); y+= 50;
+        }
+        else{
+            // draw play area
+            g2.setColor(Color.white);
+            g2.setStroke(new BasicStroke(4F));// set how thick the lines will be, this is 4 pixels
+            g2.drawRect(left_x-4, top_y-4, WIDTH+8, HEIGHT+8);
+
+            // draw next frame
+            int x = right_x + 100;
+            int y = bottom_y -200;
+            g2.drawRect(x, y, 200, 200);
+            g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.drawString("NEXT", x+60, y+50);
+            
+            // score frame
+            g2.drawRect(x, top_y, 250, 300);
+            x+=40;
+            y = top_y + 90;
+            g2.drawString("LEVEL: " + level, x, y); y += 70;
+            g2.drawString("SCORE: " + score, x, y); y += 70;
+            g2.drawString("LINES: " + lines, x, y); 
+
+            // control frame
+            x = left_x - 350;
+            y = bottom_y - 500;
+            g2.drawRect(x, y, 325, 400);
+            g2.drawString("CONTROLS", x + 75, y + 50); y+= 100;
+            x+=10;
+            g2.drawString("UP: ROTATE PIECE", x, y); y+= 50;
+            g2.drawString("RIGHT: MOVE RIGHT", x, y); y+= 50;
+            g2.drawString("LEFT: MOVE LEFT", x, y); y+= 50;
+            g2.drawString("DOWN: SOFT DROP", x, y); y+= 50;
+            g2.drawString("SPACE: HARD DROP", x, y); y+= 50;
+            g2.drawString("ESCAPE: PAUSE", x, y); y+= 50;
+
+            // draw hold frame
+        /*  x = left_x - 250;
+            y = top_y + 50;
+            g2.drawRect(x, y, 200, 200);
+            g2.drawString("HOLD", x+60, y+50); */
+
+            // draw current tetronimo
+            if(currentMino != null){
+                currentMino.draw(g2);
             }
 
-            // how many frames the effect will be visible for
-            switch(dropInterval){
-                case 60:
-                    if(effectCounter == 20){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 50:
-                    if(effectCounter == 17){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 40:
-                    if(effectCounter == 15){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 30:
-                    if(effectCounter == 13){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 20:
-                    if(effectCounter == 10){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                break;
-                case 10: 
-                    if(effectCounter == 7){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 9:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 8:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 7:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 6:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 5:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 4:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 3:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 2:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
-                case 1:
-                    if(effectCounter == 5){
-                        effectCounterOn = false;
-                        effectCounter = 0;
-                        effectY.clear();
-                    }
-                    break;
+            nextMino.draw(g2);
+            //holdMino.draw(g2);
 
+            // draw static blocks
+            for(int i = 0; i < staticBlocks.size(); i++){
+                staticBlocks.get(i).draw(g2);
             }
-        }
 
-        // pause or game over screen
-        g2.setColor(Color.yellow);
-        g2.setFont(g2.getFont().deriveFont(50f));
-        if(gameOver){
-            x = left_x + 25;
-            y = top_y + 320;
-            g2.drawString("GAME OVER", x, y);
-        }
-        else if(KeyHandler.pausePressed){
-            x = left_x + 70;
-            y = top_y + 320;
-            g2.drawString("PAUSED", x, y);
+            // draw clear effect
+            if(effectCounterOn){
+                effectCounter ++;
+
+                g2.setColor(Color.white);
+                for(int i = 0; i < effectY.size(); i++){
+                    g2.fillRect(left_x, effectY.get(i), WIDTH, Block.SIZE);
+                }
+
+                // how many frames the effect will be visible for
+                switch(dropInterval){
+                    case 60:
+                        if(effectCounter == 20){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 50:
+                        if(effectCounter == 17){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 40:
+                        if(effectCounter == 15){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 30:
+                        if(effectCounter == 13){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 20:
+                        if(effectCounter == 10){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                    break;
+                    case 10: 
+                        if(effectCounter == 7){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 9:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 8:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 7:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 6:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 5:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 4:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 3:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 2:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+                    case 1:
+                        if(effectCounter == 5){
+                            effectCounterOn = false;
+                            effectCounter = 0;
+                            effectY.clear();
+                        }
+                        break;
+
+                }
+            }
+
+            // pause or game over screen
+            g2.setFont(g2.getFont().deriveFont(50));
+            if(gameOver){
+                g2.setColor(Color.black);
+                g2.setFont(new Font("Times New Roman", Font.BOLD, 30));
+                g2.setFont(g2.getFont().deriveFont(50f));
+                x = left_x + 25;
+                y = top_y + 320;
+                g2.drawString("GAME OVER", x, y);
+
+                g2.setColor(Color.yellow);
+                g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+                g2.setFont(g2.getFont().deriveFont(50f));
+                x = left_x + 25;
+                y = top_y + 320;
+                g2.drawString("GAME OVER", x, y);
+            }
+            else if(KeyHandler.pausePressed){
+                g2.setColor(Color.black);
+                g2.setFont(new Font("Times New Roman", Font.BOLD, 30));
+                g2.setFont(g2.getFont().deriveFont(50f));
+                x = left_x + 70;
+                y = top_y + 320;
+                g2.drawString("PAUSED", x, y); y+= 50;
+                
+                g2.setColor(Color.white);
+                g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+                g2.setFont(g2.getFont().deriveFont(50f));
+                x = left_x + 70;
+                y = top_y + 320;
+                g2.drawString("PAUSED", x, y); y+= 50;
+            }
         }
     }
 
