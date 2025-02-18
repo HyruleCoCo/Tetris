@@ -372,7 +372,10 @@ public class PlayManager {
                 g2.setStroke(new BasicStroke(4F));// set how thick the lines will be, this is 4 pixels
                 g2.fill3DRect(left_x-4, top_y-4, WIDTH+8, HEIGHT+8, false);
                 
-
+                x = right_x + 100;
+                y = bottom_y -200;
+                g2.fill3DRect(x+10, y+50,180, 140, false);
+                
                 g2.setColor(Color.yellow);
                 g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
                 g2.setFont(g2.getFont().deriveFont(50f));
