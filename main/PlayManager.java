@@ -101,6 +101,7 @@ public class PlayManager {
 
             // check if a line is cleared after a tetronimo becomes inactive
             checkLineClear();
+            
         }
         else{
             currentMino.update();

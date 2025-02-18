@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     private void update(){
-        if(!KeyHandler.pausePressed && !pm.gameOver)
+        if(!KeyHandler.pausePressed && !pm.gameOver && KeyHandler.start)
             pm.update();
     }
 
