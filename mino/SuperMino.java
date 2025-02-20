@@ -187,6 +187,7 @@ public class SuperMino {
             if(!deactivating){
                 GamePanel.se.play(4, false);
             }
+            PlayManager.holdPerDrop = 1;
             deactivating = true;
         }
         else{

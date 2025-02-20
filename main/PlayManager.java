@@ -4,7 +4,7 @@ import mino.*;
 
 import java.awt.*;
 import java.util.*;
-// TODO: Add hold mechanics
+
 public class PlayManager {
     // play area
     final int WIDTH = 360, HEIGHT = 600;
@@ -20,11 +20,14 @@ public class PlayManager {
     SuperMino holdMino;
     final int HOLDMINO_X;
     final int HOLDMINO_Y;
+    SuperMino tempMino;
     public static ArrayList<Block> staticBlocks = new ArrayList<>();
 
     // other
     public static int dropInterval = 60; // tetronimo drops every 60 frames
     boolean gameOver = false;
+    boolean pieceHeld = false;
+    public static int holdPerDrop = 0;
 
     // score
     public int score = 0;
@@ -49,8 +52,8 @@ public class PlayManager {
         NEXTMINO_X = right_x + 175;
         NEXTMINO_Y = top_y + 500;
 
-        HOLDMINO_X = left_x - 170;
-        HOLDMINO_Y = top_y + 150;
+        HOLDMINO_X = left_x - 220;
+        HOLDMINO_Y = top_y + 100;
 
         // set starting tetronimo
         currentMino = pickMino();
@@ -58,7 +61,7 @@ public class PlayManager {
         nextMino = pickMino();
         nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
         holdMino = pickMino();
-        //holdMino.setXY(HOLDMINO_X, HOLDMINO_Y);
+        holdMino.setXY(HOLDMINO_X, HOLDMINO_Y);
     }
     private SuperMino pickMino(){
         //pick a random tetronimo
@@ -77,8 +80,29 @@ public class PlayManager {
         return mino;
     }
     public void update(){
+        if(KeyHandler.cPressed){
+            if(holdPerDrop == 0){
+                if(!pieceHeld){
+                    holdMino = currentMino;
+                    currentMino = pickMino();
+                    currentMino.setXY(MINO_START_X, MINO_START_Y);
+                    holdMino.setXY(HOLDMINO_X, HOLDMINO_Y);
+                }
+                else{
+                    tempMino = holdMino;
+                    holdMino = currentMino;
+                    currentMino = tempMino;
+                    currentMino.setXY(MINO_START_X, MINO_START_Y);
+                    holdMino.setXY(HOLDMINO_X, HOLDMINO_Y);
+                }
+                holdPerDrop++;
+                pieceHeld = true;
+            }
+            KeyHandler.cPressed = false;
+        }
         if(!currentMino.active){
             // put mino in static blocks if not active
+            holdPerDrop = 1;// prevents hold scumming
             staticBlocks.add(currentMino.b[0]);
             staticBlocks.add(currentMino.b[1]);
             staticBlocks.add(currentMino.b[2]);
@@ -96,6 +120,7 @@ public class PlayManager {
             // replace current Mino
             currentMino = nextMino;
             currentMino.setXY(MINO_START_X, MINO_START_Y);
+            holdPerDrop = 0;
             nextMino = pickMino();
             nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
 
@@ -232,7 +257,6 @@ public class PlayManager {
             y = top_y;
             g2.drawRect(x, y, 200, 200);
             g2.drawString("HOLD", x+60, y+50);
-            g2.drawString("N/A", x+60, y+125);
 
             // draw current tetronimo
             if(currentMino != null){
@@ -240,8 +264,9 @@ public class PlayManager {
             }
 
             nextMino.draw(g2);
-            //holdMino.draw(g2);
-
+            if(pieceHeld){
+            holdMino.draw(g2);
+            }
             // draw static blocks
             for(int i = 0; i < staticBlocks.size(); i++){
                 staticBlocks.get(i).draw(g2);
