@@ -66,7 +66,7 @@ public class PlayManager {
     private SuperMino pickMino(){
         //pick a random tetronimo
         SuperMino mino = null;
-        int i = new Random().nextInt(7);
+        int i = new Random().nextInt(14);
 
         switch(i){
             case 0 -> mino = new L1();
@@ -76,6 +76,14 @@ public class PlayManager {
             case 4 -> mino = new Square();
             case 5 -> mino = new T();
             case 6 -> mino = new Z(); 
+
+            case 7 -> mino = new S();
+            case 8 -> mino = new L2();
+            case 9 -> mino = new Square();
+            case 10 -> mino = new Z();
+            case 11 -> mino = new Line();
+            case 12 -> mino = new T();
+            case 13 -> mino = new L1();
         }
         return mino;
     }
