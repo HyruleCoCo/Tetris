@@ -215,8 +215,8 @@ public class PlayManager {
 
             // control frame
             x = left_x - 350;
-            y = bottom_y - 500;
-            g2.drawRect(x, y, 325, 400);
+            y = bottom_y - 380;
+            g2.drawRect(x, y, 325, 415);
             g2.drawString("CONTROLS", x + 75, y + 50); y+= 100;
             x+=10;
             g2.drawString("UP: ROTATE PIECE", x, y); y+= 50;
@@ -224,13 +224,15 @@ public class PlayManager {
             g2.drawString("LEFT: MOVE LEFT", x, y); y+= 50;
             g2.drawString("DOWN: SOFT DROP", x, y); y+= 50;
             g2.drawString("SPACE: HARD DROP", x, y); y+= 50;
-            g2.drawString("ESCAPE: PAUSE", x, y); y+= 50;
+            g2.drawString("C: HOLD PIECE", x, y); y+= 50;
+            g2.drawString("ESCAPE: PAUSE", x, y); 
 
             // draw hold frame
-        /*  x = left_x - 250;
-            y = top_y + 50;
+            x = left_x - 300;
+            y = top_y;
             g2.drawRect(x, y, 200, 200);
-            g2.drawString("HOLD", x+60, y+50); */
+            g2.drawString("HOLD", x+60, y+50);
+            g2.drawString("N/A", x+60, y+125);
 
             // draw current tetronimo
             if(currentMino != null){
