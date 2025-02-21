@@ -226,7 +226,7 @@ public class PlayManager {
             g2.drawRect(left_x-4, top_y-4, WIDTH+8, HEIGHT+8);
             g2.setStroke(new BasicStroke(2F));
             int x = left_x;
-            int y = top_y-4;
+            int y = top_y+3;
 
             // draw grid
             g2.setColor(new Color(20, 20, 20));
