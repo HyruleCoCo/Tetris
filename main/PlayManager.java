@@ -1,9 +1,8 @@
 package main;
 
-import mino.*;
-
 import java.awt.*;
 import java.util.*;
+import mino.*;
 
 public class PlayManager {
     // play area
@@ -28,6 +27,7 @@ public class PlayManager {
     boolean gameOver = false;
     boolean pieceHeld = false;
     public static int holdPerDrop = 0;
+    Random ran = new Random(System.currentTimeMillis());
 
     // score
     public int score = 0;
@@ -66,7 +66,7 @@ public class PlayManager {
     private SuperMino pickMino(){
         //pick a random tetronimo
         SuperMino mino = null;
-        int i = new Random().nextInt(14);
+        int i = ran.nextInt(7);
 
         switch(i){
             case 0 -> mino = new L1();
@@ -75,15 +75,7 @@ public class PlayManager {
             case 3 -> mino = new S();
             case 4 -> mino = new Square();
             case 5 -> mino = new T();
-            case 6 -> mino = new Z(); 
-
-            case 7 -> mino = new S();
-            case 8 -> mino = new L2();
-            case 9 -> mino = new Square();
-            case 10 -> mino = new Z();
-            case 11 -> mino = new Line();
-            case 12 -> mino = new T();
-            case 13 -> mino = new L1();
+            case 6 -> mino = new Z();
         }
         return mino;
     }
@@ -92,7 +84,9 @@ public class PlayManager {
             if(holdPerDrop == 0){
                 if(!pieceHeld){
                     holdMino = currentMino;
-                    currentMino = pickMino();
+                    currentMino = nextMino;
+                    nextMino = pickMino();
+                    nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
                     currentMino.setXY(MINO_START_X, MINO_START_Y);
                     holdMino.setXY(HOLDMINO_X, HOLDMINO_Y);
                 }
@@ -195,7 +189,7 @@ public class PlayManager {
             GamePanel.se.play(1, false);
             // add score
             if(lineCount > 0){
-                int singleLineScore = 1 * level;
+                int singleLineScore = 10 * level;
                 score += singleLineScore * lineCount;
             }
         }
@@ -214,7 +208,7 @@ public class PlayManager {
             g2.setColor(Color.white);
             x = left_x - 350;
             y = bottom_y - 500;
-            g2.drawRect(x, y, 325, 400);
+            g2.drawRect(x, y, 325, 415);
             g2.drawString("CONTROLS", x + 75, y + 50); y+= 100;
             x+=10;
             g2.drawString("UP: ROTATE PIECE", x, y); y+= 50;
@@ -222,17 +216,35 @@ public class PlayManager {
             g2.drawString("LEFT: MOVE LEFT", x, y); y+= 50;
             g2.drawString("DOWN: SOFT DROP", x, y); y+= 50;
             g2.drawString("SPACE: HARD DROP", x, y); y+= 50;
-            g2.drawString("ESCAPE: PAUSE", x, y); y+= 50;
+            g2.drawString("C: HOLD PIECE", x, y); y+= 50;
+            g2.drawString("ESCAPE: PAUSE", x, y);
         }
         else{
             // draw play area
             g2.setColor(Color.white);
             g2.setStroke(new BasicStroke(4F));// set how thick the lines will be, this is 4 pixels
             g2.drawRect(left_x-4, top_y-4, WIDTH+8, HEIGHT+8);
+            g2.setStroke(new BasicStroke(2F));
+            int x = left_x;
+            int y = top_y-4;
+
+            // draw grid
+            g2.setColor(new Color(20, 20, 20));
+            y = MINO_START_Y- Block.SIZE;
+            for(int i = 0; i < 20; i++){
+                x = left_x;
+                for(int j = 0; j < 12; j++){
+                g2.drawRect(x, y, Block.SIZE+1, Block.SIZE+2);
+                x+=Block.SIZE;
+                }
+                y+=Block.SIZE;
+            }
+            g2.setStroke(new BasicStroke(4));
+            g2.setColor(Color.white);
 
             // draw next frame
-            int x = right_x + 100;
-            int y = bottom_y -200;
+            x = right_x + 100;
+            y = bottom_y -200;
             g2.drawRect(x, y, 200, 200);
             g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -427,6 +439,12 @@ public class PlayManager {
                 x = right_x + 100;
                 y = bottom_y -200;
                 g2.fill3DRect(x+10, y+50,180, 140, false);
+
+                x = left_x - 300;
+                y = top_y;
+                g2.fill3DRect(x+5, y+60, 180, 125, false);
+                g2.setColor(Color.white);
+                g2.drawString("HOLD", x+60, y+50);
                 
                 g2.setColor(Color.yellow);
                 g2.setFont(new Font("Times New Roman", Font.PLAIN, 30));
